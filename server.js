@@ -142,9 +142,10 @@ async function getFolder(auth) {
 async function uploadFile(folderID, auth) {
     const drive = google.drive({ version: "v3", auth });
     // Uploading Single file to drive
+    const filename = "RNotes-" + Date.now() + ".md";
     const result = await drive.files.create({
         requestBody: {
-            name: "RNotes-" + Date.now() + ".md",
+            name: filename,
             mimeType: "text/markdown",
             parents: [folderID],
         },
@@ -172,7 +173,7 @@ async function uploadFile(folderID, auth) {
             body: JSON.stringify({
                 public: true,
                 files: {
-                    ["RNotes-" + Date.now() + ".md"]: {
+                    [filename]: {
                         content: d.write(b),
                     },
                 },
