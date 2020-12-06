@@ -4,7 +4,6 @@ const port = 3000;
 const chokidar = require("chokidar");
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 const fetch = require("node-fetch");
 const { google } = require("googleapis");
 const readline = require("readline");
