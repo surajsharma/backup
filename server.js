@@ -154,7 +154,7 @@ async function uploadFile(folderID, auth) {
             body: fs.createReadStream("RNotes.md"),
         },
     });
-    console.log("Gist Uploaded");
+    console.log("File Uploaded");
     notifier.notify({
         title: "Backup Script",
         message: "File Uploaded",
