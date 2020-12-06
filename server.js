@@ -89,12 +89,14 @@ function getAccessToken(oAuth2Client, callback) {
  */
 async function getFolder(auth) {
     const drive = google.drive({ version: "v3", auth });
+
     await drive.files.list(
         {
             q: "mimeType='application/vnd.google-apps.folder'",
             pageSize: 1,
             fields: "nextPageToken, files(id, name)",
         },
+
         async (err, res) => {
             if (err) return console.log("The API returned an error: " + err);
 
@@ -105,6 +107,7 @@ async function getFolder(auth) {
                     if (file.name === "Running Notes") {
                         uploadFile(file.id, auth);
                     } else {
+                        // create folder
                         var folderMetadata = {
                             name: "Running Notes",
                             mimeType: "application/vnd.google-apps.folder",
@@ -122,7 +125,7 @@ async function getFolder(auth) {
                                     console.error(err);
                                 } else {
                                     console.log(
-                                        "Folder created, uploadig file "
+                                        "Folder created, uploading file "
                                     );
                                     return uploadFile(file.data.id, auth);
                                 }
@@ -210,16 +213,17 @@ async function main(auth) {
             }
         });
     }
-
-    app.post("/uploadGD", async (req, res) => {
-        console.log("Changes detected, /uploadGD uploading file...");
-        const auth = req.query.auth;
-
-        // Authenticating drive API
-        const drive = google.drive({ version: "v3", auth });
-        const folderID = await getFolder(auth);
-    });
 }
+
+app.post("/uploadGD", async (req, res) => {
+    console.log("Changes detected, /uploadGD uploading file...");
+    const auth = req.query.auth;
+
+    // Authenticating drive API
+    const drive = google.drive({ version: "v3", auth });
+    const folderID = await getFolder(auth);
+});
+
 app.listen(port, () =>
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`sever listening at http://localhost:${port}`)
 );
