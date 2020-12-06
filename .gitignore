@@ -1,0 +1,8 @@
+RNotes.md
+node_modules
+.DS_Store
+.swp
+token.json
+credentials.json
+package-lock.json
+.env
