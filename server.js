@@ -9,6 +9,7 @@ const { google } = require("googleapis");
 const readline = require("readline");
 const runMiddleware = require("run-middleware");
 const StringDecoder = require("string_decoder").StringDecoder;
+const notifier = require("node-notifier");
 
 const app = express();
 runMiddleware(app);
@@ -153,8 +154,11 @@ async function uploadFile(folderID, auth) {
             body: fs.createReadStream("RNotes.md"),
         },
     });
-
-    console.log("File uploaded to GD");
+    console.log("Gist Uploaded");
+    notifier.notify({
+        title: "Backup Script",
+        message: "File Uploaded",
+    });
 
     let d = new StringDecoder("utf8");
     let stat = fs.statSync("RNotes.md");
@@ -179,7 +183,10 @@ async function uploadFile(folderID, auth) {
             }),
         }).then((res) =>
             res.status === 201
-                ? console.log("Gist Uploaded")
+                ? notifier.notify({
+                      title: "Backup Script",
+                      message: "Gist Uploaded",
+                  }) && console.log("Gist Uploaded")
                 : console.log(res, "ERROR Uploading Gist")
         );
     });
@@ -189,6 +196,10 @@ async function uploadFile(folderID, auth) {
 
 async function main(auth) {
     if (auth) {
+        notifier.notify({
+            title: "Backup Script",
+            message: "Connected to GD, watching RNotes.md...",
+        });
         console.log("Connected to GD, watching RNotes.md...");
         chokidar.watch("RNotes.md").on("all", (event, path) => {
             if (event === "change") {
