@@ -14,6 +14,9 @@ const notifier = require("node-notifier");
 const app = express();
 runMiddleware(app);
 
+//pug
+app.set("view engine", "pug");
+
 // If modifying these scopes, delete token.json.
 
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
@@ -216,7 +219,7 @@ async function main(auth) {
 }
 
 app.get("/uploadURL", async (req, res) => {
-    res.send("upload from url to GD");
+    res.render("uploadurl", { title: "Hey", message: "Hello there!" });
 });
 
 app.post("/uploadGD", async (req, res) => {
