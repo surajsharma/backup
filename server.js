@@ -1,5 +1,5 @@
 require("dotenv").config();
-const port = 3000;
+const port = 5000;
 
 const chokidar = require("chokidar");
 const express = require("express");
@@ -214,6 +214,10 @@ async function main(auth) {
         });
     }
 }
+
+app.get("/uploadURL", async (req, res) => {
+    res.send("upload from url to GD");
+});
 
 app.post("/uploadGD", async (req, res) => {
     console.log("Changes detected, /uploadGD uploading file...");
