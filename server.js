@@ -10,11 +10,14 @@ const readline = require("readline");
 const runMiddleware = require("run-middleware");
 const StringDecoder = require("string_decoder").StringDecoder;
 const notifier = require("node-notifier");
+const bodyParser = require("body-parser");
+
 
 const app = express();
 runMiddleware(app);
 
-//pug
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.set("view engine", "pug");
 
 // If modifying these scopes, delete token.json.
@@ -219,8 +222,13 @@ async function main(auth) {
     }
 }
 
-app.get("/uploadURL", async (req, res) => {
-    res.render("uploadurl", { title: "Hey", message: "Hello there!" });
+app.get('/', function (req, res) {
+  res.render('index', { title: 'URL To GD', message: 'Enter URL of File To Upload' })
+})
+
+app.post("/uploadurl",  async (req, res) => {
+    console.log(req.params, req.body);
+    res.render("uploadurl", { title: "Uploading file...", message: req.body.url });
 });
 
 app.post("/uploadGD", async (req, res) => {
@@ -232,6 +240,4 @@ app.post("/uploadGD", async (req, res) => {
     const folderID = await getFolder(auth);
 });
 
-app.listen(port, () =>
-    console.log(`sever listening at http://localhost:${port}`)
-);
+app.listen(port, () => console.log(`server listening at http://localhost:${port}`));
