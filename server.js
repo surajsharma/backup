@@ -223,7 +223,7 @@ async function main(auth) {
 }
 
 app.get('/', function (req, res) {
-  res.render('index', { title: 'URL To GD', message: 'Enter URL of File To Upload' })
+  res.render('index', { title: 'URL To GD', message: 'Enter URL of file To upload' })
 })
 
 

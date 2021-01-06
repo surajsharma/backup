@@ -7,22 +7,19 @@ html
             integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous")
     style(type='text/css').
       .main{
-        margin:10px; 
-        padding:10px; 
+        background-color: yellow;
         }
       .vertical-center {
         min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
         min-height: 100vh; /* These two lines are counted as one :-)       */
         display: flex;
-        align-items: center;
+        text-align:center;
       }
 
   body
     div.container-fluid.d-flex.flex-column.align-items-center.justify-content-center.main.vertical-center
-      h3=message
-      br
-      div
-        form(method='POST', action='/uploadurl', name='upload')
-          input(type='text' name='url' class="form-control-lg form-control")
+      div.w-50
+        form(method='POST', action='/uploadurl', name='upload', class="justify-content-center align-items-center")
+          input(type='text' name='url' class="form-control-lg form-control" placeholder="URL of file to upload")
           br
-          input(type='submit' value='Upload' class="btn btn-primary form-control")
+          input(type='submit' value='Upload' class="btn btn-primary form-control w-50")
