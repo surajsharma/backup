@@ -229,13 +229,24 @@ app.get('/', function (req, res) {
 
 app.post("/uploadurl",  async (req, res) => {
     console.log(req.params, req.body);
-    res.render("uploadurl", { title: "Uploading file...", message: req.body.url });
+    let url = req.body.url;
+    var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    var regex = new RegExp(expression);
+    if (url.match(regex)) {
+        res.render("uploadurl", { title: "Uploading file...", message: url });
+        // check if file exists!?
+        // get file size
+        // start upload
+        // show progress
+    } else {
+        res.render("error", { title: "Invalid Input", message: url });
+    }
+    
 });
 
 app.post("/uploadGD", async (req, res) => {
     console.log("Changes detected, /uploadGD uploading file...");
     const auth = req.query.auth;
-
     // Authenticating drive API
     const drive = google.drive({ version: "v3", auth });
     const folderID = await getFolder(auth);
