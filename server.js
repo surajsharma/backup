@@ -227,13 +227,31 @@ app.get('/', function (req, res) {
 })
 
 
+function validURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(str);
+}
+
 app.post("/uploadurl",  async (req, res) => {
     console.log(req.params, req.body);
     let url = req.body.url;
-    var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-    var regex = new RegExp(expression);
-    if (url.match(regex)) {
-        res.render("uploadurl", { title: "Uploading file...", message: url });
+    // var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    // var regex = new RegExp(expression);
+    if (validURL(url)) {
+        console.log(url)
+        fetch(url).then(response => {
+            if(response.status === 200){
+                res.render("uploadurl", { title: "Uploading file...", message: url });
+            } else {
+                res.render("error", { title: "Something went wrong while accessing the file: ", message: url });
+
+            }
+        })
         // check if file exists!?
         // get file size
         // start upload
@@ -251,5 +269,7 @@ app.post("/uploadGD", async (req, res) => {
     const drive = google.drive({ version: "v3", auth });
     const folderID = await getFolder(auth);
 });
+
+
 
 app.listen(port, () => console.log(`server listening at http://localhost:${port}`));

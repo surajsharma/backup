@@ -20,6 +20,6 @@ html
     div.container-fluid.d-flex.flex-column.align-items-center.justify-content-center.main.vertical-center
       div.w-50
         form(method='POST', action='/uploadurl', name='upload', class="justify-content-center align-items-center")
-          input(type='text' name='url' class="form-control-lg form-control" placeholder="URL of file to upload")
+          input(type='text' name='url' class="form-control-lg form-control" placeholder="URL of file to upload" required)
           br
           input(type='submit' value='Upload' class="btn btn-primary form-control w-50")
