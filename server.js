@@ -11,8 +11,9 @@ const runMiddleware = require("run-middleware");
 const StringDecoder = require("string_decoder").StringDecoder;
 const notifier = require("node-notifier");
 const bodyParser = require("body-parser");
-
-
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const { resolve } = require("path");
+ 
 const app = express();
 runMiddleware(app);
 
@@ -237,29 +238,32 @@ function validURL(str) {
     return !!pattern.test(str);
 }
 
-app.post("/uploadurl",  async (req, res) => {
-    console.log(req.params, req.body);
-    let url = req.body.url;
-    // var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-    // var regex = new RegExp(expression);
-    if (validURL(url)) {
-        console.log(url)
-        fetch(url).then(response => {
-            if(response.status === 200){
-                res.render("uploadurl", { title: "Uploading file...", message: url });
-            } else {
-                res.render("error", { title: "Something went wrong while accessing the file: ", message: url });
+function getFileSize(url)
+{    
+    let size = '';
 
-            }
-        })
-        // check if file exists!?
+    console.log('get file size')
+    return fetch(url, {method: 'HEAD'})
+    .then((result) => {
+        return result.headers.get("content-length");
+     }).catch(err=>console.log(err));
+     
+}
+
+app.post("/uploadurl",  async (req, res) => {
+    // console.log(req.params, req.body);
+    let url = req.body.url;
+    if (validURL(url)) {
         // get file size
+        let size = await getFileSize(url);
+        if(size){
+            console.log('size /uploadurl', size);
+        }
         // start upload
         // show progress
     } else {
         res.render("error", { title: "Invalid Input", message: url });
     }
-    
 });
 
 app.post("/uploadGD", async (req, res) => {
@@ -273,3 +277,4 @@ app.post("/uploadGD", async (req, res) => {
 
 
 app.listen(port, () => console.log(`server listening at http://localhost:${port}`));
+ 

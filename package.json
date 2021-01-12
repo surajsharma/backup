@@ -17,6 +17,7 @@
     "node-fetch": "^2.6.1",
     "node-notifier": "^8.0.0",
     "pug": "^3.0.0",
-    "run-middleware": "^0.9.10"
+    "run-middleware": "^0.9.10",
+    "xmlhttprequest": "^1.8.0"
   }
 }
