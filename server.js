@@ -3,17 +3,17 @@ const port = 5000;
 
 const chokidar = require("chokidar");
 const express = require("express");
-const fs = require("fs");
-const fetch = require("node-fetch");
 const { google } = require("googleapis");
 const readline = require("readline");
+const fs = require("fs");
+const fetch = require("node-fetch");
 const runMiddleware = require("run-middleware");
 const StringDecoder = require("string_decoder").StringDecoder;
 const notifier = require("node-notifier");
 const bodyParser = require("body-parser");
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const { resolve } = require("path");
+const {validURL, getFileSize} = require ("./utils")
  
+
 const app = express();
 runMiddleware(app);
 
@@ -227,40 +227,24 @@ app.get('/', function (req, res) {
   res.render('index', { title: 'URL To GD', message: 'Enter URL of file To upload' })
 })
 
-
-function validURL(str) {
-    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-    return !!pattern.test(str);
-}
-
-function getFileSize(url)
-{    
-    let size = '';
-
-    console.log('get file size')
-    return fetch(url, {method: 'HEAD'})
-    .then((result) => {
-        return result.headers.get("content-length");
-     }).catch(err=>console.log(err));
-     
-}
-
 app.post("/uploadurl",  async (req, res) => {
-    // console.log(req.params, req.body);
     let url = req.body.url;
+    const auth = req.query.auth;
+    // Authenticating drive API
+    const drive = google.drive({ version: "v3", auth });
+    const folderID = await getFolder(auth);
     if (validURL(url)) {
         // get file size
         let size = await getFileSize(url);
         if(size){
             console.log('size /uploadurl', size);
+            res.render("uploadurl", { title: "uploading file", message: size });
+            // start upload
+            // 1. Retrieve session for resumable upload.
+            // 2. upload the file 
+            // show progress
         }
-        // start upload
-        // show progress
+
     } else {
         res.render("error", { title: "Invalid Input", message: url });
     }
@@ -274,7 +258,4 @@ app.post("/uploadGD", async (req, res) => {
     const folderID = await getFolder(auth);
 });
 
-
-
 app.listen(port, () => console.log(`server listening at http://localhost:${port}`));
- 
