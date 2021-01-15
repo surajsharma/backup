@@ -1,10 +1,11 @@
 const url = require("url");
 const path = require("path");
 const fetch = require("node-fetch");
-var decode = require('urldecode')
 const fs = require("fs");
 const http = require('http');
 const { google } = require("googleapis");
+const decode = require('urldecode');
+const got = require("got");
 
 async function uploadFileAtUrl(auth, urll, size){
     // console.log('uploadFileAtUrl', auth.credentials.access_token, url, size);
@@ -12,22 +13,24 @@ async function uploadFileAtUrl(auth, urll, size){
     var parsed = url.parse(urll);
     let fname = decode(path.basename(parsed.pathname));
     let ftype = '';
-
+    let fsize = 0;
     const drive = google.drive({ version: "v3", auth });
 
-    fetch(urll).then((res)=>{
+    fetch(urll, {method: 'HEAD'}).then((res)=>{
         if(res.status == 200){
             ftype=res.headers.get("content-type");
+            fsize=res.headers.get("content-length");
             console.log("🥦" , fname, size, ftype);
-            
-            var fileMetadata = {
-                'name': fname
-              };
+            let content = '';
+            got.stream(urll).pipe();
+            // var fileMetadata = {
+            //     'name': fname
+            //   };
               
-              var media = {
-                  mimeType: ftype,
-                  body: fetch(urll).then(res => res.pipe(fs.createWriteStream(fname)))
-                };              
+            //   var media = {
+            //       mimeType: ftype,
+            //       body: fetch(urll).then(res => res.pipe(fs.createWriteStream(fname)))
+            //     };              
         }
     })
 }

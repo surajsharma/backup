@@ -13,17 +13,18 @@ function validURL(str) {
 function getFileSize(url)
 {    
     // this works only if the server is broadcasting content-length
+    //TODO: add workaround for when this fails
+
     let size = '';
-    console.log('get file size')
+
+    // console.log('getting file size...');
     return fetch(url, {method: 'HEAD'})
-    .then((result) => {
-        return result.headers.get("content-length");
-     })
-     .catch(err=>console.log("ERROR: ", err));
+            .then((result) => {
+                return result.headers.get("content-length");
+            })
+            .catch(err=>console.log("ERROR: ", err));
      
 }
-
-
 
 module.exports = {
     validURL, getFileSize

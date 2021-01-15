@@ -33,7 +33,6 @@ app.post("/uploadurl",  async (req, res) => {
         // get file size
         let size = await getFileSize(url);
         if(size){
-            console.log('size /uploadurl', size);
             res.render("uploadurl", { title: "uploading file", message: size });
             // Load client secrets from a local file.
             fs.readFile("credentials.json", (err, content) => {
