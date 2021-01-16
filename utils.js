@@ -1,4 +1,7 @@
 const fetch = require("node-fetch");
+const got = require("got");
+
+var rfs = require('remote-file-size')
 
 function validURL(str) {
     var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
@@ -13,17 +16,21 @@ function validURL(str) {
 function getFileSize(url)
 {    
     // this works only if the server is broadcasting content-length
+
     //TODO: add workaround for when this fails
+
+    console.log('getting file size...');
+
+    let s = 0;
 
     let size = '';
 
-    // console.log('getting file size...');
-    return fetch(url, {method: 'HEAD'})
-            .then((result) => {
-                return result.headers.get("content-length");
-            })
-            .catch(err=>console.log("ERROR: ", err));
-     
+    s = rfs(url, (err,o)=>{
+        console.log('file size is ', o,' bytes')
+        return o;
+    });
+
+    return s;     
 }
 
 module.exports = {
