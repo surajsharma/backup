@@ -8,8 +8,11 @@ const decode = require('urldecode');
 const got = require("got");
 const {promisify} = require('util');
 const stream = require('stream');
+
+
 async function uploadFileAtUrl(auth, urll, size){
     // console.log('uploadFileAtUrl', auth.credentials.access_token, url, size);
+
     const pipeline = promisify(stream.pipeline);
 
     let parsed = url.parse(urll);
@@ -37,7 +40,7 @@ async function uploadFileAtUrl(auth, urll, size){
                 }
             }).catch(err=>console.log(err));
 
-            console.log(media)
+            console.log(media);
         }
     })
 }

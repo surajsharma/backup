@@ -1,5 +1,8 @@
 require("dotenv").config();
+
 const port = 5000;
+
+const { google } = require("googleapis");
 
 const fs = require("fs");
 const runMiddleware = require("run-middleware");
@@ -7,7 +10,7 @@ const express = require("express");
 const chokidar = require("chokidar");
 const notifier = require("node-notifier");
 const bodyParser = require("body-parser");
-const { google } = require("googleapis");
+
 const fetch = require("node-fetch");
 
 const {validURL, getFileSize} = require ("./utils")
@@ -32,6 +35,7 @@ app.post("/uploadurl",  async (req, res) => {
     if (validURL(url)) {
         // get file size
         let size = await getFileSize(url);
+
         if(size){
             res.render("uploadurl", { title: "uploading file", message: size });
             // Load client secrets from a local file.
@@ -46,9 +50,11 @@ app.post("/uploadurl",  async (req, res) => {
                 if (!error && response.statusCode == 200) {
                     var csv = body;
                     // Continue with your processing here.
-                    console.log(csv)
+                    console.log(csv);
                 }
             });
+        } else {
+            console.log("size not found")
         }
 
     } else {
